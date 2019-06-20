@@ -1,0 +1,12 @@
+{
+  "name": "nnn-router",
+  "version": "0.0.3",
+  "main": "index.js",
+  "module": "modIndex.js",
+  "author": "Hiroki Nagase",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "glob": "^7.1.4"
+  }
+}

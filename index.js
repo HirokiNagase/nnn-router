@@ -3,7 +3,7 @@ const express = require('express')
 const router = express.Router()
 
 const reqmethods =[
-  '.get.','.head.','.post.','.put.','.delete.','.connnect.','.options.','.trace.','.patch.'
+  'get','head','post','put','delete','connnect','options','trace','patch'
 ]
 
 module.exports = (options = { routeDir: './routes' }) => {
@@ -13,15 +13,19 @@ module.exports = (options = { routeDir: './routes' }) => {
   const pathObj = glob.sync(filePattern, { cwd: absolute }).reduce((obj, path) => {
     try {
       if (throwerror(path).toString() == [-1, -1, -1, -1, -1, -1, -1, -1, -1].toString()) {
-        throw new Error('invalid file name')
+        throw new Error('invalid filename use HTTP method')
       }
     } catch(error){
       console.error("ERROR:", error)
     }
+
     const cut = '/' + path.replace('.js', '').replace(/_/g, ':')
-    const lastdot = cut.lastIndexOf('.')
-    const dotcut = cut.substring(0,lastdot)
-    const apiPath = dotcut.slice(-5) === 'index' ? dotcut.slice(0, -5) : dotcut
+    const ctest = reqmethods.map(method => {
+      return cut.replace(method, '')
+    })
+    const result = ctest.sort((a, b) => a < b ? -1 : 1)
+
+    const apiPath = result[0].slice(-5) === 'index' ? result[0].slice(0, -5) : result[0]
     obj[absolute + '/' + path] = apiPath
     return obj
   }, {})

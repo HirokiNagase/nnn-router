@@ -33,17 +33,19 @@ This file tree:
 ```
 routes/
 --| users/
------| index.get.js
------| index.post.js
------| _id.get.js
------| _id.delete.js
+-----| get.js
+-----| post.js
+-----| _id/
+-------| get.js
+-------| delete.js
 --| books/
 -----| _bookId/
 --------| authors/
------------| _authorId.get.js
------------| _authorId.delete.js
---| index.get.js
---| index.put.js
+-----------| _authorId/
+-------------| get.js
+-------------| delete.js
+--| get.js
+--| put.js
 ```
 
 generate express Route path:

@@ -1,17 +1,22 @@
 const nnn = require('../index')
 const express = require('express')
 const app = express()
+const router = express()
 
-app.get('/get', (req, res) => {
-  res.send('get get get')
-})
+const port = 5000
 
 const options = {
   routeDir: '/routes',
-  // baseRouter: app
+  // baseRouter: router
 }
+
+app.use('/example',(req, res, next) => {
+  console.log('middleware')
+  res.send('example mid active')
+  next()
+})
 
 app.use(nnn(options)) 
 
-app.listen(5000)
-console.log('check nnn-router at localhost:5000')
+app.listen(port)
+console.log(`check nnn-router at localhost:${port}`)

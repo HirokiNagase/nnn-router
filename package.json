@@ -1,8 +1,11 @@
 {
   "name": "nnn-router",
-  "version": "0.0.3",
-  "main": "index.js",
-  "module": "modIndex.js",
+  "version": "1.0.0",
+  "main": "index",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HirokiNagase/nnn-router"
+  },
   "author": "Hiroki Nagase",
   "license": "MIT",
   "dependencies": {

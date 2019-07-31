@@ -13,15 +13,15 @@ export default (options = { routeDir: '/routes' }) => {
   const pathObj = glob.sync(filePattern, { cwd: absolute }).reduce((obj, path) => {
     try {
       if (throwerror(path).toString() == [-1, -1, -1, -1, -1, -1, -1, -1, -1].toString()) {
-        throw new Error('invalid file name')
+        throw new Error('invalid filename use HTTP method')
       }
     } catch (error) {
       console.error("ERROR:", error)
     }
+
     const cut = '/' + path.replace('.js', '').replace(/_/g, ':')
-    const lastdot = cut.lastIndexOf('.')
-    const dotcut = cut.substring(0, lastdot)
-    const apiPath = dotcut.slice(-5) === 'index' ? dotcut.slice(0, -5) : dotcut
+    const result = cut.split('/').slice(0, -1).join('/') + '/'
+    const apiPath = result[0].slice(-5) === 'index' ? result.slice(0, -5) : result
     obj[absolute + '/' + path] = apiPath
     return obj
   }, {})
@@ -45,7 +45,6 @@ const counter = (str, seq) => {
 
 const throwerror = (path) => {
   return reqmethods.map(method => {
-    const req = path.indexOf(method)
-    return req
+    return path.indexOf(method)
   })
 }

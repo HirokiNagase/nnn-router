@@ -2,7 +2,8 @@ const glob = require('glob')
 const express = require('express')
 const router = express.Router()
 
-const reqmethods =[
+const reqmethods =
+[
   'get','head','post','put','delete','connnect','options','trace','patch'
 ]
 
@@ -20,12 +21,8 @@ module.exports = (options = { routeDir: './routes' }) => {
     }
 
     const cut = '/' + path.replace('.js', '').replace(/_/g, ':')
-    const ctest = reqmethods.map(method => {
-      return cut.replace(method, '')
-    })
-    const result = ctest.sort((a, b) => a < b ? -1 : 1)
-
-    const apiPath = result[0].slice(-5) === 'index' ? result[0].slice(0, -5) : result[0]
+    const result = cut.split('/').slice(0, -1).join('/') + '/'
+    const apiPath = result[0].slice(-5) === 'index' ? result.slice(0, -5) : result
     obj[absolute + '/' + path] = apiPath
     return obj
   }, {})

@@ -1,11 +1,18 @@
 {
   "name": "nnn-router",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "index",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HirokiNagase/nnn-router"
   },
+  "files": [
+    "index.js",
+    "index.mjs",
+    "package.json",
+    "README.md",
+    "test"
+  ],
   "author": "Hiroki Nagase",
   "license": "MIT",
   "dependencies": {

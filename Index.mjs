@@ -2,20 +2,16 @@ import glob from 'glob'
 import express from 'express'
 const router = express.Router()
 
-const reqmethods = [
-  '.get.', '.head.', '.post.', '.put.', '.delete.', '.connnect.', '.options.', '.trace.', '.patch.'
-]
-
 export default (options = { routeDir: '/routes' }) => {
   const filePattern = '**/*.js'
-  const absolute = process.cwd() + options.routeDir.replace('./', '/')
+  const absolute = process.cwd() + options.routeDir.replace('./','/')
 
   const pathObj = glob.sync(filePattern, { cwd: absolute }).reduce((obj, path) => {
     try {
       if (throwerror(path).toString() == [-1, -1, -1, -1, -1, -1, -1, -1, -1].toString()) {
         throw new Error('invalid filename use HTTP method')
       }
-    } catch (error) {
+    } catch(error){
       console.error("ERROR:", error)
     }
 
@@ -28,20 +24,25 @@ export default (options = { routeDir: '/routes' }) => {
 
   // Descending sort for exception handling at dynamic routes
   const sortedPaths = Object.entries(pathObj).sort((a, b) => a < b ? 1 : -1)
-    .sort(function (a, b) { return (counter(a[1], '/') - counter(b[1], '/')) })
   const temporary = options.baseRouter === undefined ? router : options.baseRouter
 
   sortedPaths.forEach(([filePath, routePath]) => {
-    Object.entries(require(filePath)).forEach(([httpMethod, handler]) => {
-      temporary[httpMethod](routePath, handler)
-    })
+    const method = filePath.split('/').slice(-1)[0].replace('.js','')
+    const handler = require(filePath)
+    if (typeof handler === 'function') {
+      temporary[method](routePath, handler) //module.exports
+    } else if (typeof handler === 'object') {
+      Object.values(handler).forEach(fun => {
+        temporary[method](routePath, fun)
+      }) //exports.get
+    }
   })
   return temporary
 }
 
-const counter = (str, seq) => {
-  return str.split(seq).length - 1
-}
+const reqmethods = [
+  'get', 'head', 'post', 'put', 'delete', 'connnect', 'options', 'trace', 'patch'
+]
 
 const throwerror = (path) => {
   return reqmethods.map(method => {

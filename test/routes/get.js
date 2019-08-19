@@ -1,4 +1,4 @@
-exports.get = (req, res) => {
+module.exports = (req, res) => {
   res.send('THIS IS INDEX')
 }
 

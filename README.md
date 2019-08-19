@@ -37,13 +37,11 @@ routes/
 -----| post.js
 -----| _id/
 -------| get.js
--------| delete.js
 --| books/
 -----| _bookId/
 --------| authors/
 -----------| _authorId/
 -------------| get.js
--------------| delete.js
 --| get.js
 --| put.js
 ```
@@ -62,6 +60,15 @@ exports.get = (req, res) => {
   res.send('nnn-router')
 }
 ```
+
+or
+
+```js
+module.exports = (req, res) => {
+  res.send('nnn-router')
+}
+```
+
 
 ## License
 MIT

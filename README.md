@@ -22,12 +22,15 @@ const app = express()
 const router = express()
 
 const options = {
-  routeDir: '/routes', //REQUIRED
-  baseRouter: router   //NOT RQUIRED
+  routeDir: '/routes', // DEFAULT '/routes'
+  absolutePath: 'YOUR ABSOLUTE PATH', // NOT RQUIRED
+  baseRouter: router   // NOT RQUIRED
 }
 
 app.use(nnn(options))
 ```
+When you use both of routeDir and absolutePath, absolutePath overrides routeDir
+
 
 This file tree:
 ```

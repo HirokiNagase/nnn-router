@@ -2,11 +2,12 @@ const glob = require('glob')
 const express = require('express')
 const router = express.Router()
 
-module.exports = (options = { routeDir: './routes' }) => {
+module.exports = (options = {}) => {
+  const routeDir = ('routeDir' in options) ? options.routeDir : '/routes'
   const filePattern = '**/*.js'
-  const absolute = process.cwd() + options.routeDir.replace('./','/')
+  const usePath = options.absolutePath === undefined ? process.cwd() + routeDir.replace('./', '/') : options.absolutePath
 
-  const pathObj = glob.sync(filePattern, { cwd: absolute }).reduce((obj, path) => {
+  const pathObj = glob.sync(filePattern, { cwd: usePath }).reduce((obj, path) => {
     try {
       if (throwerror(path).toString() == [-1, -1, -1, -1, -1, -1, -1, -1, -1].toString()) {
         throw new Error('invalid filename use HTTP method')
@@ -18,7 +19,7 @@ module.exports = (options = { routeDir: './routes' }) => {
     const cut = '/' + path.replace('.js', '').replace(/_/g, ':')
     const result = cut.split('/').slice(0, -1).join('/') + '/'
     const apiPath = result[0].slice(-5) === 'index' ? result.slice(0, -5) : result
-    obj[absolute + '/' + path] = apiPath
+    obj[usePath + '/' + path] = apiPath
     return obj
   }, {})
 

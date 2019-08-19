@@ -6,7 +6,8 @@ const router = express()
 const port = 5000
 
 const options = {
-  routeDir: '/routes',
+  // routeDir: '/routes', // default: '/routes'
+  // absolutePath: 'YOUR ABSOLUTE PATH', // default null, abosolutePath >> relativePath
   // baseRouter: router
 }
 

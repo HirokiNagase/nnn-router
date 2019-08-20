@@ -2,11 +2,12 @@ import glob from 'glob'
 import express from 'express'
 const router = express.Router()
 
-export default (options = { routeDir: '/routes' }) => {
+export default (options = {}) => {
+  const routeDir = ('routeDir' in options) ? options.routeDir : '/routes'
   const filePattern = '**/*.js'
-  const absolute = process.cwd() + options.routeDir.replace('./','/')
+  const usePath = options.absolutePath === undefined ? process.cwd() + routeDir.replace('./', '/') : options.absolutePath
 
-  const pathObj = glob.sync(filePattern, { cwd: absolute }).reduce((obj, path) => {
+  const pathObj = glob.sync(filePattern, { cwd: usePath }).reduce((obj, path) => {
     try {
       if (throwerror(path).toString() == [-1, -1, -1, -1, -1, -1, -1, -1, -1].toString()) {
         throw new Error('invalid filename use HTTP method')
@@ -18,7 +19,7 @@ export default (options = { routeDir: '/routes' }) => {
     const cut = '/' + path.replace('.js', '').replace(/_/g, ':')
     const result = cut.split('/').slice(0, -1).join('/') + '/'
     const apiPath = result[0].slice(-5) === 'index' ? result.slice(0, -5) : result
-    obj[absolute + '/' + path] = apiPath
+    obj[usePath + '/' + path] = apiPath
     return obj
   }, {})
 
@@ -30,11 +31,11 @@ export default (options = { routeDir: '/routes' }) => {
     const method = filePath.split('/').slice(-1)[0].replace('.js','')
     const handler = require(filePath)
     if (typeof handler === 'function') {
-      temporary[method](routePath, handler) //module.exports
+      temporary[method](routePath, handler)
     } else if (typeof handler === 'object') {
       Object.values(handler).forEach(fun => {
         temporary[method](routePath, fun)
-      }) //exports.get
+      })
     }
   })
   return temporary

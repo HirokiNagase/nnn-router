@@ -31,11 +31,11 @@ module.exports = (options = {}) => {
     const method = filePath.split('/').slice(-1)[0].replace('.js','')
     const handler = require(filePath)
     if (typeof handler === 'function') {
-      temporary[method](routePath, handler) //module.exports
+      temporary[method](routePath, handler)
     } else if (typeof handler === 'object') {
       Object.values(handler).forEach(fun => {
         temporary[method](routePath, fun)
-      }) //exports.get
+      })
     }
   })
   return temporary

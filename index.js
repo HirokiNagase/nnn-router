@@ -28,7 +28,8 @@ module.exports = (options = {}) => {
   const temporary = options.baseRouter === undefined ? router : options.baseRouter
 
   sortedPaths.forEach(([filePath, routePath]) => {
-    const method = filePath.split('/').slice(-1)[0].replace('.js', '') === 'middleware' ? 'use' : filePath.split('/').slice(-1)[0].replace('.js', '')
+    const methodName = filePath.split('/').slice(-1)[0].replace('.js', '').replace('.ts', '')
+    const method = methodName === 'middleware' ? 'use' : methodName
     const handler = require(filePath)
     if (handler.middleware) {
       handler.middleware.forEach(middleware => {

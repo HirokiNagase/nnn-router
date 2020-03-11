@@ -14,7 +14,7 @@ yarn add nnn-router
 
 ## Usage
 
-Example:
+### Example:
 ```js
 const nnn = require('nnn-router')
 const express = require('express')
@@ -36,8 +36,8 @@ This file tree:
 ```
 routes/
 --| users/
------| get.js
 -----| post.js
+-----| middleware.js
 -----| _id/
 -------| get.js
 --| books/
@@ -46,7 +46,6 @@ routes/
 -----------| _authorId/
 -------------| get.js
 --| get.js
---| put.js
 ```
 
 generate express Route path:
@@ -71,7 +70,42 @@ module.exports = (req, res) => {
   res.send('nnn-router')
 }
 ```
+### Use middlewares:
+Using under method
+```js
+// get.js
+exports = module.exports = (req, res) => {
+  res.send('req.params.id is ' + req.params.id)
+  console.log(req.params.id)
+}
 
+const middle = (req, res, next) => {
+  console.log(req.method)
+  next()
+}
+
+const middle2 = (req, res, next) => {
+  console.log('bar')
+  next()
+}
+
+exports.middleware = [middle, middle2]
+```
+
+Using under any file
+
+```js
+// middleware.js
+exports.middleware01 = (req, res, next) {
+  cosole.log('middleware01')
+  next()
+}
+exports.middleware02 = (req, res, next) {
+  cosole.log('middleware02')
+  next()
+}
+```
+If use middleware overall, should set it the execution file
 
 ## License
 MIT

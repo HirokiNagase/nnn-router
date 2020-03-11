@@ -4,21 +4,21 @@ const router = express.Router()
 
 export default (options = {}) => {
   const routeDir = ('routeDir' in options) ? options.routeDir : '/routes'
-  const filePattern = '**/*.js'
+  const filePattern = '**/@(*.js|*.ts)'
   const usePath = options.absolutePath === undefined ? process.cwd() + routeDir.replace('./', '/') : options.absolutePath
 
   const pathObj = glob.sync(filePattern, { cwd: usePath }).reduce((obj, path) => {
     try {
-      if (throwerror(path).toString() == [-1, -1, -1, -1, -1, -1, -1, -1, -1].toString()) {
+      if (throwerror(path).toString() == [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1].toString()) {
         throw new Error('invalid filename use HTTP method')
       }
-    } catch(error){
+    } catch (error) {
       console.error("ERROR:", error)
     }
 
-    const cut = '/' + path.replace('.js', '').replace(/_/g, ':')
-    const result = cut.split('/').slice(0, -1).join('/') + '/'
-    const apiPath = result[0].slice(-5) === 'index' ? result.slice(0, -5) : result
+    const cut = '/' + path.replace('.js', '').replace('.ts', '').replace(/_/g, ':')
+    const result = cut.split('/').slice(0, -1).join('/')
+    const apiPath = result === '' ? '/' : result
     obj[usePath + '/' + path] = apiPath
     return obj
   }, {})
@@ -28,9 +28,14 @@ export default (options = {}) => {
   const temporary = options.baseRouter === undefined ? router : options.baseRouter
 
   sortedPaths.forEach(([filePath, routePath]) => {
-    const method = filePath.split('/').slice(-1)[0].replace('.js','')
+    const method = filePath.split('/').slice(-1)[0].replace('.js', '') === 'middleware' ? 'use' : filePath.split('/').slice(-1)[0].replace('.js', '')
     const handler = require(filePath)
-    if (typeof handler === 'function') {
+    if (handler.middleware) {
+      handler.middleware.forEach(middleware => {
+        temporary.use(routePath, middleware)
+      })
+      temporary[method](routePath, handler)
+    } else if (typeof handler === 'function') {
       temporary[method](routePath, handler)
     } else if (typeof handler === 'object') {
       Object.values(handler).forEach(fun => {
@@ -42,7 +47,7 @@ export default (options = {}) => {
 }
 
 const reqmethods = [
-  'get', 'head', 'post', 'put', 'delete', 'connnect', 'options', 'trace', 'patch'
+  'get', 'head', 'post', 'put', 'delete', 'connnect', 'options', 'trace', 'patch', 'middleware'
 ]
 
 const throwerror = (path) => {

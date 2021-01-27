@@ -27,12 +27,13 @@ export default (options = {}) => {
   const sortedPaths = Object.entries(pathObj).sort((a, b) => a < b ? 1 : -1)
   const temporary = options.baseRouter === undefined ? router : options.baseRouter
 
-  sortedPaths.forEach(([filePath, routePath]) => {
-    const method = filePath.split('/').slice(-1)[0].replace('.js', '') === 'middleware' ? 'use' : filePath.split('/').slice(-1)[0].replace('.js', '')
-    const handler = require(filePath)
+  sortedPaths.forEach(async ([filePath, routePath]) => {
+    const methodName = filePath.split('/').slice(-1)[0].replace('.js', '').replace('.ts', '')
+    const method = methodName === 'middleware' ? 'use' : methodName
+    const handler = await import(filePath)
     if (handler.middleware) {
       handler.middleware.forEach(middleware => {
-        temporary.use(routePath, middleware)
+        temporary[method](routePath, middleware)
       })
       temporary[method](routePath, handler)
     } else if (typeof handler === 'function') {

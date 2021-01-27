@@ -18,5 +18,11 @@
   "dependencies": {
     "express": "^4.17.1",
     "glob": "^7.1.4"
+  },
+  "exports": {
+    "import": "./index.mjs",
+    "require": "./index.js",
+    "node": "./index.mjs",
+    "default": "./index.js"
   }
 }

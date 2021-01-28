@@ -25,9 +25,11 @@ module.exports = (options = {}) => {
 
   // Descending sort for exception handling at dynamic routes
   const sortedPaths = Object.entries(pathObj).sort((a, b) => a < b ? 1 : -1)
+  // Sort middleware to the top of the array
+  const middlewareSort = sortedPaths.filter(a => a[0].slice(a[0].lastIndexOf('/') + 1).slice(0, 'middleware'.length) === 'middleware').concat(sortedPaths.filter(a => a[0].slice(a[0].lastIndexOf('/') + 1).slice(0, 'middleware'.length) !== 'middleware'))
   const temporary = options.baseRouter === undefined ? router : options.baseRouter
 
-  sortedPaths.forEach(([filePath, routePath]) => {
+  middlewareSort.forEach(([filePath, routePath]) => {
     const methodName = filePath.split('/').slice(-1)[0].replace('.js', '').replace('.ts', '')
     const method = methodName === 'middleware' ? 'use' : methodName
     const handler = require(filePath)

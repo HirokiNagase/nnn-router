@@ -1,6 +1,7 @@
 const glob = require('glob')
 const express = require('express')
 const router = express.Router()
+const isWindows = process.platform === 'win32'
 
 module.exports = (options = {}) => {
   const routeDir = ('routeDir' in options) ? options.routeDir : '/routes'
@@ -32,7 +33,7 @@ module.exports = (options = {}) => {
   middlewareSort.forEach(([filePath, routePath]) => {
     const methodName = filePath.split('/').slice(-1)[0].replace('.js', '').replace('.ts', '')
     const method = methodName === 'middleware' ? 'use' : methodName
-    const handler = require(filePath)
+    const handler = require((isWindows ? 'file://' : '') + filePath)
     if (handler.middleware) {
       handler.middleware.forEach(middleware => {
         temporary[method](routePath, middleware)

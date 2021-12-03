@@ -7,7 +7,12 @@ export default (options = {}) => {
   return async (req, res, next) => {
     const routeDir = 'routeDir' in options ? options.routeDir : '/routes'
     const filePattern = '**/@(*.js|*.ts)'
-    const usePath = options.absolutePath === undefined ? process.cwd() + routeDir.replace('./', '/') : options.absolutePath
+
+    const usePath =
+      options.absolutePath === undefined
+        ? process.cwd() + routeDir.replace('./', '/')
+        : options.absolutePath
+
 
     const pathObj = glob
       .sync(filePattern, { cwd: usePath })
@@ -45,6 +50,7 @@ export default (options = {}) => {
         .replace('.js', '')
         .replace('.ts', '')
       const method = methodName === 'middleware' ? 'use' : methodName
+
       const handler = await import((isWindows ? 'file://' : '') + filePath)
       if (handler.middleware) {
         handler.middleware.forEach(middleware => {

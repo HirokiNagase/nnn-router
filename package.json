@@ -9,9 +9,9 @@
   "files": [
     "index.js",
     "index.mjs",
+    "index.d.ts",
     "package.json",
-    "README.md",
-    "test"
+    "README.md"
   ],
   "author": "Hiroki Nagase",
   "license": "MIT",

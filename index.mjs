@@ -4,7 +4,11 @@ const router = express.Router()
 const isWindows = process.platform === 'win32'
 
 export default (options = {}) => {
+  let temporary
   return async (req, res, next) => {
+    if (temporary) return temporary(req, res, next)
+    temporary =
+      typeof options.baseRouter === 'undefined' ? router : options.baseRouter
     const routeDir = 'routeDir' in options ? options.routeDir : '/routes'
     const filePattern = '**/@(*.js|*.ts)'
 
@@ -40,7 +44,6 @@ export default (options = {}) => {
       .concat(
         sortedPaths.filter(a => a[0].slice(a[0].lastIndexOf('/') + 1).slice(0, 'middleware'.length) !== 'middleware')
       )
-    const temporary = options.baseRouter === undefined ? router : options.baseRouter
 
     for (let i = 0; i < middlewareSort.length; i++) {
       const [filePath, routePath] = middlewareSort[i]

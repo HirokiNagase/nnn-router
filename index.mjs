@@ -56,7 +56,8 @@ export default (options = {}) => {
         handler.middleware.forEach(middleware => {
           temporary[method](routePath, middleware)
         })
-        temporary[method](routePath, handler)
+        if (typeof handler !== 'object')
+          temporary[method](routePath, handler)
       } else if (typeof handler === 'function') {
         temporary[method](routePath, handler)
       } else if (typeof handler === 'object') {
